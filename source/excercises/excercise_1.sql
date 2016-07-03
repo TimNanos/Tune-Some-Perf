@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE EXCERCISE_1 (pin_numberParameter IN NUMBER)
+CREATE OR REPLACE PROCEDURE excercise_1 (pin_numberParameter IN NUMBER)
 AS
 BEGIN
   FOR i IN 1..100
@@ -6,4 +6,5 @@ BEGIN
     EXECUTE IMMEDIATE 'INSERT INTO TABLE_1(' || TO_CHAR(pin_numberParameter) || ')';
     COMMIT;
   END LOOP;
-END EXCERCISE_1;
+END excercise_1;
+/
