@@ -1,3 +1,3 @@
-DROP USER perf_sys;
-
-DROP USER perf;
+DROP USER perf CASCADE;
+DROP USER perf_sys CASCADE;
+EXIT

@@ -1,1 +1,1 @@
-@excercises\excercise_1.sql
+@excercises/excercise_1.sql

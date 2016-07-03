@@ -12,13 +12,18 @@ CREATE OR REPLACE PACKAGE BODY unit_tests AS
     li_unitTestResult PLS_INTEGER;
     result BOOLEAN := FALSE;
   BEGIN
-    EXECUTE IMMEDIATE 'UNIT_TEST_' || TO_CHAR(pii_excerciseID)
+    -- TODO fix this one!
+    EXECUTE IMMEDIATE 'BEGIN unit_tests.unit_test_' || TO_CHAR(pii_excerciseID) || '; END;'
     INTO li_unitTestResult;
 
     IF li_unitTestResult = 1 THEN
       result := TRUE;
     END IF;
+    
+    RETURN result;
   END run_unit_test;
+
+-- Excercises unit tests
 
   FUNCTION unit_test_1
   RETURN PLS_INTEGER
@@ -30,23 +35,24 @@ CREATE OR REPLACE PACKAGE BODY unit_tests AS
   BEGIN
     ln_numberToInsert := DBMS_RANDOM.NORMAL;
 
-    EXECUTE IMMEDIATE 'TRUNCATE TABLE TABLE_1';
+    EXECUTE IMMEDIATE 'TRUNCATE TABLE table_1';
 
-    PERF_EXCERCISE_1(ln_numberToInsert);
+    perf.excercise_1(ln_numberToInsert);
 
-    BEGIN
-      SELECT t.N,
-             COUNT(*)
-        INTO ln_insertedNumber,
-             li_countRows
-        FROM TABLE_1 t;
-    EXCEPTION
-        -- TODO fix to too_many_rows and No_Rows
-      WHEN OTHERS THEN
-        NULL;
-    END;
-    
-    IF ln_numberToInsert = ln_insertedNumber AND li_countRows = 100 THEN
+    SELECT COUNT(*)
+      INTO li_countRows
+      FROM (SELECT ROWNUM as id,
+                   ln_insertedNumber as value
+              FROM dual
+           CONNECT BY ROWNUM <= 100
+           ) t_corr1
+      FULL OUTER JOIN table_1 t_exc1
+        ON t_exc1.id = t_corr1.id
+       AND t_exc1.value = t_exc1.value
+     WHERE DECODE(t_exc1.id, t_corr1.id, 1, 0) = 0
+        OR DECODE(t_exc1.value, t_corr1.value, 1, 0) = 0;
+
+    IF li_countRows = 0 THEN
       result := 1;
     END IF;
 
