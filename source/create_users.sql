@@ -1,3 +1,0 @@
-CREATE USER perf_sys IDENTIFIED BY oracle;
-
-GRANT CREATE SESSION TO perf_sys;

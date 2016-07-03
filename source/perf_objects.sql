@@ -1,0 +1,2 @@
+@excercises.sql
+EXIT
