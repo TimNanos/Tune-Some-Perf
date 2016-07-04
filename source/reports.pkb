@@ -13,17 +13,17 @@ CREATE OR REPLACE PACKAGE BODY reports AS
   END p;
 
 
-  PROCEDURE report (pii_excerciseID IN PLS_INTEGER)
+  PROCEDURE report (pii_exerciseID IN INTEGER)
   AS
     lv_stringToPrint VARCHAR2(200);
   BEGIN
-    lv_stringToPrint := 'Excercise ' || TO_CHAR(pii_excerciseID) || '. Tests: ';
+    lv_stringToPrint := 'Exercise ' || TO_CHAR(pii_exerciseID) || '. Tests: ';
 
-    IF unit_tests.run_unit_test(pii_excerciseID) THEN
-      lv_stringToPrint := lv_stringToPrint || 'Pass. Performance score: ' || ROUND(perf_tests.run_perf_test(pii_excerciseID), 2) || '/10.';
+    IF unit_tests.run_unit_test(pii_exerciseID) THEN
+      lv_stringToPrint := lv_stringToPrint || 'Pass. Performance score: ' || ROUND(perf_tests.run_perf_test(pii_exerciseID), 2) || ' (+-10) / 100.';
     ELSE
       -- TODO add reinstall command
-      lv_stringToPrint := lv_stringToPrint || 'FAIL. Please reinstall the excercise.';
+      lv_stringToPrint := lv_stringToPrint || 'FAIL. Please reinstall the exercise.';
     END IF;
 
     p(lv_stringToPrint);
@@ -33,7 +33,7 @@ CREATE OR REPLACE PACKAGE BODY reports AS
   PROCEDURE report
   AS
   BEGIN
-    -- TODO report all excercises
+    -- TODO report all exercises
     NULL;
   END report;
   

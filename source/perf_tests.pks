@@ -6,8 +6,10 @@
 
 CREATE OR REPLACE PACKAGE perf_tests AS 
 
-  FUNCTION run_perf_test(pii_excerciseID IN PLS_INTEGER)
+  FUNCTION run_perf_test (pii_exerciseID IN INTEGER)
   RETURN NUMBER;
-  
+
+  PROCEDURE best_exercise_1 (pin_numberParameter IN NUMBER);
+
 END perf_tests; 
 / 

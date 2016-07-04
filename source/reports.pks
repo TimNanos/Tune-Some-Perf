@@ -6,7 +6,7 @@
 
 CREATE OR REPLACE PACKAGE reports AS 
 
-  PROCEDURE report (pii_excerciseID IN PLS_INTEGER);
+  PROCEDURE report (pii_exerciseID IN INTEGER);
 
   PROCEDURE report;
 

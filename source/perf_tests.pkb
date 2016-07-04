@@ -6,39 +6,52 @@
 
 CREATE OR REPLACE PACKAGE BODY perf_tests AS
 
-  FUNCTION run_perf_test(pii_excerciseID IN PLS_INTEGER)
+  PROCEDURE best_exercise_1 (pin_numberParameter IN NUMBER)
+  AS
+  BEGIN
+    INSERT INTO table_1 (id, value)
+    SELECT ROWNUM,
+           pin_numberParameter
+      FROM DUAL
+   CONNECT BY ROWNUM <= 100;
+
+    COMMIT;
+  END best_exercise_1;
+
+
+  FUNCTION run_perf_test(pii_exerciseID IN INTEGER)
   RETURN NUMBER
   AS
     result NUMBER := 0;
     ln_startTime NUMBER;
-    --ln_originalProcedure NUMBER := 0;
     ln_bestPossibleProcedure NUMBER := 0;
-    ln_excercise NUMBER := 0;
+    ln_exercise NUMBER := 0;
+    ln_numberToCheck NUMBER;
   BEGIN
-    FOR i IN 1..1000
+    FOR i IN 1..10000
     LOOP
-      /*
-      -- run the original procedure
-      ln_startTime := DBMS_UTILITY.GET_TIME;
-      -- TODO
-      ln_originalProcedure := ln_originalProcedure + DBMS_UTILITY.GET_TIME - ln_startTime;
-      */
+      ln_numberToCheck := DBMS_RANDOM.NORMAL;
 
-      -- run the best possible procedure
+      -- run the best possible option
       ln_startTime := DBMS_UTILITY.GET_TIME;
-      -- TODO
+      EXECUTE IMMEDIATE 'BEGIN perf_tests.best_exercise_' || TO_CHAR(pii_exerciseID) || '( :n ); END;'
+      USING ln_numberToCheck;
       ln_bestPossibleProcedure := ln_bestPossibleProcedure + DBMS_UTILITY.GET_TIME - ln_startTime;
 
-      -- run the excercise
+      -- run the exercise
       ln_startTime := DBMS_UTILITY.GET_TIME;
-      -- TODO
-      ln_excercise := ln_excercise + DBMS_UTILITY.GET_TIME - ln_startTime;
+      EXECUTE IMMEDIATE 'BEGIN perf.exercise_' || TO_CHAR(pii_exerciseID) || '( :n ); END;'
+      USING ln_numberToCheck;
+      ln_exercise := ln_exercise + DBMS_UTILITY.GET_TIME - ln_startTime;
+
+      -- Exit the loop if the check takes longer than 10 sec
+      EXIT WHEN (ln_bestPossibleProcedure + ln_exercise) / 100 >= 10;
     END LOOP;
 
-    IF ln_excercise = 0 THEN
-      result := 10.00;
+    IF ln_exercise = 0 THEN
+      result := 100;
     ELSE
-      result := ROUND((ln_bestPossibleProcedure / ln_excercise) * 10, 2);
+      result := ROUND((ln_bestPossibleProcedure / ln_exercise) * 100);
     END IF;
 
     RETURN result;
