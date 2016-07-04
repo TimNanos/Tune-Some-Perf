@@ -1,13 +1,14 @@
 -- perf_sys user
-CREATE USER perf_sys IDENTIFIED BY oracle;
+CREATE USER perf_sys IDENTIFIED BY oracle QUOTA UNLIMITED ON users TEMPORARY TABLESPACE temp;
 -- perf_sys privileges
 GRANT CREATE SESSION TO perf_sys;
 GRANT CREATE TABLE TO perf_sys;
 GRANT CREATE PROCEDURE TO perf_sys;
 -- perf user
-CREATE USER perf IDENTIFIED BY oracle;
--- perf_sys privileges
+CREATE USER perf IDENTIFIED BY oracle QUOTA UNLIMITED ON users TEMPORARY TABLESPACE temp;
+-- perf privileges
 GRANT CREATE SESSION TO perf;
 GRANT CREATE TABLE TO perf;
 GRANT CREATE PROCEDURE TO perf;
+GRANT CREATE SYNONYM TO perf;
 EXIT

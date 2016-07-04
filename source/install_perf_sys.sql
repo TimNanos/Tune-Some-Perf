@@ -14,5 +14,4 @@ GRANT INSERT ON table_1 TO perf;
 @reports.pkb
 
 GRANT EXECUTE ON reports TO perf;
-
 EXIT

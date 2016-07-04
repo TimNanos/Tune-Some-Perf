@@ -6,43 +6,26 @@
 
 CREATE OR REPLACE PACKAGE BODY unit_tests AS
 
-  FUNCTION run_unit_test(pii_excerciseID IN PLS_INTEGER)
-  RETURN BOOLEAN
-  AS
-    li_unitTestResult PLS_INTEGER;
-    result BOOLEAN := FALSE;
-  BEGIN
-    -- TODO fix this one!
-    EXECUTE IMMEDIATE 'BEGIN unit_tests.unit_test_' || TO_CHAR(pii_excerciseID) || '; END;'
-    INTO li_unitTestResult;
-
-    IF li_unitTestResult = 1 THEN
-      result := TRUE;
-    END IF;
-    
-    RETURN result;
-  END run_unit_test;
-
--- Excercises unit tests
+-- Excercise 1
 
   FUNCTION unit_test_1
   RETURN PLS_INTEGER
   AS
     result PLS_INTEGER := 0;
     ln_numberToInsert NUMBER;
-    ln_insertedNumber NUMBER;
     li_countRows PLS_INTEGER;
   BEGIN
     ln_numberToInsert := DBMS_RANDOM.NORMAL;
 
     EXECUTE IMMEDIATE 'TRUNCATE TABLE table_1';
 
-    perf.excercise_1(ln_numberToInsert);
+    EXECUTE IMMEDIATE 'BEGIN perf.excercise_1( :n ); END;'
+    USING ln_numberToInsert;
 
     SELECT COUNT(*)
       INTO li_countRows
       FROM (SELECT ROWNUM as id,
-                   ln_insertedNumber as value
+                   ln_numberToInsert as value
               FROM dual
            CONNECT BY ROWNUM <= 100
            ) t_corr1
@@ -58,6 +41,30 @@ CREATE OR REPLACE PACKAGE BODY unit_tests AS
 
     RETURN result;
   END unit_test_1;
+
+
+-- Tests engine
+
+  FUNCTION run_unit_test(pii_excerciseID IN PLS_INTEGER)
+  RETURN BOOLEAN
+  AS
+    li_unitTestResult PLS_INTEGER;
+    result BOOLEAN := FALSE;
+  BEGIN
+    ROLLBACK;
+
+    CASE pii_excerciseID
+      WHEN 1 THEN
+        li_unitTestResult := unit_test_1;
+      ELSE li_unitTestResult := 0;
+    END CASE;
+
+    IF li_unitTestResult = 1 THEN
+      result := TRUE;
+    END IF;
+    
+    RETURN result;
+  END run_unit_test;
 
 END unit_tests;
 / 
