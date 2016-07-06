@@ -11,5 +11,7 @@ CREATE OR REPLACE PACKAGE perf_tests AS
 
   PROCEDURE best_exercise_1 (pin_numberParameter IN NUMBER);
 
+  PROCEDURE best_exercise_2 (pin_numberParameter IN NUMBER);
+
 END perf_tests; 
 / 

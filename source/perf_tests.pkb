@@ -19,6 +19,24 @@ CREATE OR REPLACE PACKAGE BODY perf_tests AS
   END best_exercise_1;
 
 
+  PROCEDURE best_exercise_2 (pin_numberParameter IN NUMBER)
+  AS
+  BEGIN
+    MERGE INTO table_2_corr t2
+    USING (SELECT pin_numberParameter AS value
+             FROM dual) td
+       ON td.value = t2.value
+      AND td.value IS NOT NULL
+     WHEN MATCHED THEN
+          DELETE WHERE t2.value = pin_numberParameter
+     WHEN NOT MATCHED THEN
+          INSERT (value)
+          VALUES (pin_numberParameter);
+
+    COMMIT;
+  END best_exercise_2;
+
+
   FUNCTION run_perf_test(pii_exerciseID IN INTEGER)
   RETURN NUMBER
   AS
